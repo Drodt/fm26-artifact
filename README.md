@@ -1,0 +1,87 @@
+# FM26 Artifact for "RustyDL: A Program Logic for Rust"
+
+## Introduction 
+
+This README is related to the artifact for the  paper "RustyDL: A Program Logic for Rust" accepted to the _Formal Methods Symposium 2026._
+
+The paper describes a dynamic logic and a calculus for Rust, permitting the deductive verification of Rust programs. The artifact contains a number of examples from the paper as well as the [RustyKeY](https://github.com/Drodt/key/tree/rusty) tool, an implementation of the paper's calculus built on the [KeY system](https://www.key-project.org/).
+
+RustyKeY's CLI is provided as a JAR file. For artifact evaluation, prefer the Docker image. If you want to install RustyKeY manually on your machine see the "Manual Installation" section below.
+
+## Estimated Time and Smoke Tests
+
+While building the Docker image may take some time, as RustyKeY builds on an extension of the Rust compiler, which takes some time to be compiled, the actual examples are run very quickly. On a moderately fast machine, build time takes ~4min and the execution of all examples takes ~2min in total.
+
+As such, the full tests are equivalent to the smoke test (a.k.a., "Kick-the-tires").
+
+Simply build the docker container using (you may need `sudo`, depending on your docker setup)
+```bash
+docker build . -t drodt/fm26
+```
+**(Note that the name is fixed. If you use another name for the image, you must also change the name in `run_all_tests.sh`!)**
+
+And then execute all tests using (possibly with `sudo` again):
+```bash
+./run_all_tests.sh
+```
+
+## Requirements
+
+For artifact evaluation, we recommend the Docker image. For that you simply need Docker.
+
+All files in the .zip file are mandatory, they are copied to the created Docker containers. **Do not remove or rename them**.
+
+## Examples
+
+The `examples` folder contains 10 examples from the paper (in subfolder `paper`). Some of them just describe the problem to be proven valid or the function contract to be verified and proving is done automatically. A few (`example5.proof`, `example6.proof`, `example7-and-8.proof`) are completed (manual) proofs, which are loaded and checked for correctness. And one example (`example4-overflow.proof`) is of an invalid sequent, which is not provable (two open goals remain).
+
+Additionally, a binary search implementation mentioned in the paper is found in the examples subfolder `binary-search`, also proven automatically.
+
+All examples are run by `run_all_tests.sh`. First, the manual tests are reloaded and checked, then the successful automatic tests are done, and finally the unprovable file is attempted.
+
+## Reusability
+
+The RustyKeY CLI is, in principle applicable to any `.key` or `.proof`-file. See its `--help` output for more information. We recapitulate the arguments used in this artifact's examples:
+- `-s`: Print proof statistics once automatic proof is done.
+- `-o [FILE]`: Path where the finished proof is written to.
+- `--no-prove`: Used to disable automatic proving and only load the file. Used here for the already completed proof files.
+- `-m [NUMBER]`: Maximal number of proof steps. Used for one example, which takes over 10,000 steps.
+
+The generated `.proof` files are readable and contain each applied sequent calculus rule and the location where it was applied. For more information, we refer to the [KeY Book](https://www.key-project.org/thebook2/).
+
+Please note that RustyKeY is still, in parts, a prototype: Not all Rust features are supported and error reporting is less-than-ideal.
+
+To create your own KeY files, here are a few explanations of the files (for details, see the [KeY Book](https://www.key-project.org/thebook2/)):
+- `\programSource` contains a path to the Rust files to be loaded/verified. It must be a folder where the `Cargo.toml` file is located
+    - You need to have the correct Rust version for your crate, see the `rust-toolchain.toml` files in the examples.
+    - If you want to specify your programs, use [rml](https://github.com/Drodt/rml).
+- `\programVariables` is for defining program variables for the logic.
+- `\problem` contains a formula or sequent to be proven.
+- `\proofObligation` specifies which contract should be verified.
+- `\proof` contains the proof steps.
+
+## Troubleshooting: MacOS
+
+To avoid issues on MacOS, we recommend that you install docker and the image system-wide. That worked in our tests.
+
+You may also run into the issue that the generated Docker config file is incorrect: In `~/.docker/config.json`, change `"credStore"` to `"credsStore"` if your container does not run.
+
+## Manual Installation
+
+### Requirements
+
+- Java 21
+- Rust, rustup, and Cargo. See the [Rust website](https://rust-lang.org/tools/install/) for instructions
+
+You will also require the [KeY-rustc-wrapper](https://github.com/Drodt/KeY-rustc-wrapper). Steps to install it using cargo are as follows:
+- Clone the repository: `git clone git@github.com:Drodt/KeY-rustc-wrapper.git`
+- Initialize the submodule in the repository: `git submodule update --remote --init`
+- Install using Cargo: `cargo install --path crates/cargo-key`
+
+This will create the `cargo-key` extension to Cargo, allowing RustyKeY to read Rust's inner data structures.
+
+Then, you can execute RustyKeY from the Jar file, using:
+```bash
+java -jar rusty-key-0.1.0-exe.jar --help
+```
+which will print the arguments and options expected by the CLI.
