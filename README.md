@@ -2,7 +2,7 @@
 
 ## Introduction 
 
-This README is related to the artifact for the  paper "RustyDL: A Program Logic for Rust" accepted to the _Formal Methods Symposium 2026._
+This README is related to the [artifact](https://github.com/Drodt/fm26-artifact) for the  paper "RustyDL: A Program Logic for Rust" accepted to the _Formal Methods Symposium 2026._
 
 The paper describes a dynamic logic and a calculus for Rust, permitting the deductive verification of Rust programs. The artifact contains a number of examples from the paper as well as the [RustyKeY](https://github.com/Drodt/key/tree/rusty) tool, an implementation of the paper's calculus built on the [KeY system](https://www.key-project.org/).
 
