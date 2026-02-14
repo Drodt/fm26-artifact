@@ -6,7 +6,7 @@ echo "= Running Successful Automatic Proofs"
 echo "== Running Paper Examples"
 echo ""
 echo "=== Example 1"
-docker run -it --name example1 drodt/fm26 java -jar rusty-key-0.1.0-exe.jar -s -o example1.proof examples/paper/example1.key
+docker run -it --name example1 derdrodt/fm26 java -jar rusty-key-0.1.0-exe.jar -s -o example1.proof examples/paper/example1.key
 docker cp example1:/home/fm26/example1.proof proofs/
 docker rm -f example1
 echo ""
