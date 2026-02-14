@@ -16,7 +16,7 @@ As such, the full tests are equivalent to the smoke test (a.k.a., "Kick-the-tire
 
 Simply build the docker container using (you may need `sudo`, depending on your docker setup)
 ```bash
-docker build . -t drodt/fm26
+docker build . -t derdrodt/fm26
 ```
 **(Note that the name is fixed. If you use another name for the image, you must also change the name in `run_all_tests.sh`!)**
 
